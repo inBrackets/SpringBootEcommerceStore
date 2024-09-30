@@ -47,9 +47,12 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
 	{
 		http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(req->req.requestMatchers("/user/**").hasRole("USER")
-				.requestMatchers("/admin/**").hasRole("ADMIN")
-				.requestMatchers("/**").permitAll())
+				.authorizeHttpRequests(
+						req->req
+								.requestMatchers("/user/**").hasRole("USER")
+								.requestMatchers("/admin/**").hasRole("ADMIN")
+								.requestMatchers("/**").permitAll()
+				)
 				.formLogin(form->form.loginPage("/signin")
 						.loginProcessingUrl("/login")
 //						.defaultSuccessUrl("/")
