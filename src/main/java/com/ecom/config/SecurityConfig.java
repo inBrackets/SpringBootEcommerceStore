@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +46,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
 	{
-		http.csrf(csrf->csrf.disable()).cors(cors->cors.disable())
+		http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(req->req.requestMatchers("/user/**").hasRole("USER")
 				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/**").permitAll())
@@ -52,8 +55,8 @@ public class SecurityConfig {
 //						.defaultSuccessUrl("/")
 						.failureHandler(authenticationFailureHandler)
 						.successHandler(authenticationSuccessHandler))
-				.logout(logout->logout.permitAll());
-		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+				.logout(LogoutConfigurer::permitAll)
+				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 		return http.build();
 	}
 
